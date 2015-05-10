@@ -120,8 +120,6 @@ RUN ln -s /usr/php/sbin/* /usr/sbin/
 # RUN make all
 # RUN make install
 
-#
-
 
 # create the configuration structure
 RUN mkdir -p /etc/php/fpm/conf.d /etc/php/fpm/pool.d
@@ -139,7 +137,7 @@ COPY php/cli/conf.d/*.ini /etc/php/cli/conf.d/
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-EXPOSE 8080 22
+EXPOSE 8080
 
 #cleanup lateron
 RUN rm -rf /tmp/*
