@@ -13,9 +13,9 @@
     <section class="page-header">
       <h1 class="project-name">Docker-php7-nightly-debian-jessy</h1>
       <h2 class="project-tagline">Docker Container with supervisor which downloads the latest master and initializes only a php-fpm instance</h2>
-      <a href="https://github.com/chilimatic/docker-php7-nightly-debian-jessy" class="btn">View on GitHub</a>
-      <a href="https://github.com/chilimatic/docker-php7-nightly-debian-jessy/zipball/master" class="btn">Download .zip</a>
-      <a href="https://github.com/chilimatic/docker-php7-nightly-debian-jessy/tarball/master" class="btn">Download .tar.gz</a>
+      <a href="https://github.com/chilimatic/docker-php7-nightly-debian-jessie" class="btn">View on GitHub</a>
+      <a href="https://github.com/chilimatic/docker-php7-nightly-debian-jessie/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/chilimatic/docker-php7-nightly-debian-jessie/tarball/master" class="btn">Download .tar.gz</a>
     </section>
 
     <section class="main-content">
@@ -33,7 +33,7 @@
 
 <p>This is not like Vagrant which is a Batch System to store states / versions of complete hybrid virtualisations. </p>
 
-<p>Docker is as mentioned before a linux container (lxc). Hence needs less resources but does not support Windows or Mac on a native lvl for more information please check <a href="http://boot2docker.io/">http://boot2docker.io/ </a> as a Mac user as a windows user I'm sorry afaik you need a VM &lt;-&gt; I would recommend Ubuntu since the packages for ubuntu are compiled and maintained by the zend guys.</p>
+<p>Docker is as mentioned before a linux container (lxc). Hence needs less resources but does not support Windows or Mac on a native lvl for more information please check <a href="http://boot2docker.io/">http://boot2docker.io/ </a> as a Mac user, as a windows user, I'm sorry afaik you need a VM &lt;-&gt; I would recommend Ubuntu since the packages for ubuntu are compiled and maintained by the zend guys. Which excludes this docker container unless you specifically want Debian Jessie.</p>
 
 <p>Please do not mistake a service container with a complete virtualisation like VBOX or VM, ..</p>
 
@@ -52,28 +52,28 @@
 <h2>
 <a id="supervisor" class="anchor" href="#supervisor" aria-hidden="true"><span class="octicon octicon-link"></span></a>Supervisor</h2>
 
-<p>Since Docker is not Vagrant the processes can not simply be put in the init.d or system.d structure and triggered. Many other boxes use internal batches I followed the OPs approach and used the supervisor. </p>
+<p>Since Docker is not Vagrant the start scripts can not simply be put in the init.d or system.d structure and triggered. Many other boxes use internal batches/scripts [/usr/bin...] I followed the OPs approach and used the supervisor. </p>
 
-<p>You can have a look at the supervisord.conf and see how a rather lazy approach has been done. Which is less work than copying batch files and trigger them via bashrc or other approaches. Taste I guess.</p>
+<p>You can have a look at the supervisord.conf and see how a rather lazy approach has been done. Which is less work than copying batch files and trigger them via bashrc or other approaches.But that is taste I guess.</p>
 
 <h2>
 <a id="fpm" class="anchor" href="#fpm" aria-hidden="true"><span class="octicon octicon-link"></span></a>FPM</h2>
 
 <p>The FPM config <strong>php-fpm.conf</strong> is only setting the pid folder and the error folder.
-The <strong>User and Group</strong> which for the workers are in the <strong><a href="http://www.conf">www.conf</a></strong> as well as the <strong>listenport 8080</strong> on the inside. </p>
+The <strong>User and Group</strong> which are for the workers [are running as those] are in the <strong><a href="http://www.conf">www.conf</a></strong> as well as the <strong>listenport 8080</strong> on the inside.</p>
+
+<p>I specified a log files as well on the inside ofc -&gt; please read tl;dr to access it</p>
 
 <p>Since I don't expect a lot of OPs knowledge from a common Dev (the have other concerns) this is already pre-configured and listens to the 8099 port on your host machine.</p>
 
-<p>I didn't want to bother with doing the socket approach which would require more detailed knowledge of the user. 
-Although it's pretty easy once you understand the <a href="https://docs.docker.com/articles/basics/">docker basics</a>
-Please do use it I wanted to keep this accessible for people who just want to code.</p>
+<p>I didn't want to bother with doing the socket approach which would require more detailed knowledge from the user. Although it's pretty easy once you understand the <a href="https://docs.docker.com/articles/basics/">docker basics</a> please do use it sockets are faster than TCP. I wanted to keep this accessible for people who just want to code.</p>
 
-<p>There are a lot of .inis which have no use since you can't compile the extensions still i left them in there because who know's what's in 2-3 Months.</p>
+<p>There are a lot of .inis which have no use since you can't compile the extensions, still I left them in there because who know's what's in 2-3 Months.</p>
 
 <h2>
 <a id="general-knowledge" class="anchor" href="#general-knowledge" aria-hidden="true"><span class="octicon octicon-link"></span></a>General Knowledge</h2>
 
-<p>** It's important that your data is accessible in the Container **
+<p><strong>It's important that your data is accessible in the Container</strong>
 <code>-v /var/www:/var/www &lt;nameofyourchoosing&gt;</code>
 this is a basic mapping of the outside to the inside &lt;-&gt; make sure it has the proper permissions 
 go with www-data this the common apache / nginx user|group and is available within debian. </p>
@@ -100,9 +100,11 @@ inside the repos root dir:</p>
 
 <p><code>docker run -d -p 127.0.0.1:8099:8080  -v /var/www:/var/www &lt;nameofyourchoosing&gt;</code></p>
 
-<p><strong>127.0.0.1:8099:8080 -&gt; 8099 is the port on the outside</strong>
-<strong>-v /inside/docker:/outside/docker</strong>
-** -d deamonize **</p>
+<ul>
+<li><strong>127.0.0.1:8099:8080 -&gt; 8099 is the port on the outside</strong></li>
+<li><strong>-v /inside/docker:/outside/docker</strong></li>
+<li><strong>-d deamonize</strong></li>
+</ul>
 
 <p>to check if it's running
 <code>docker ps</code></p>
@@ -201,7 +203,7 @@ DirectoryIndex /index.php</p>
 <p>I hope I helped at least one person otherwise at least I learned something new :)</p>
 
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/chilimatic/docker-php7-nightly-debian-jessy">Docker-php7-nightly-debian-jessy</a> is maintained by <a href="https://github.com/chilimatic">chilimatic</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/chilimatic/docker-php7-nightly-debian-jessie">Docker-php7-nightly-debian-jessy</a> is maintained by <a href="https://github.com/chilimatic">chilimatic</a>.</span>
 
         <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
