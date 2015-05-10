@@ -114,18 +114,18 @@ inside the repos root dir:</p>
 
 <p>to get nginx to pipe the request to php-fpm</p>
 
-<pre><code>  `  location ~ [^/]\.php(/|$) {`
-            `fastcgi_split_path_info ^(.+?\.php)(/.*)$;`
-            `# NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini`
-            `if (!-f $document_root$fastcgi_script_name) {`
-                    `return 404;`
-            `}`
+<pre><code>  `  location ~ [^/]\.php(/|$) {
+            fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+            # NOTE: You should have "cgi.fix_pathinfo = 0;" in php.ini
+            if (!-f $document_root$fastcgi_script_name) {
+                    return 404;
+            }
 
-            `# With php5-cgi alone:`
-            `fastcgi_pass 127.0.0.1:8099;`
-            `fastcgi_index index.php;`
-            `include fastcgi_params;`
-    `}`
+            # With php5-cgi alone:
+            fastcgi_pass 127.0.0.1:8099;
+            fastcgi_index index.php;
+            include fastcgi_params;
+    } `
 </code></pre>
 
 <p>to get the apache2.4
