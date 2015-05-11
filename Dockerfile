@@ -42,7 +42,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get -y install git \
 	libtool \
 	gettext \
 	libreadline-dev \
-	supervisor
+	supervisor \
+	nano
 
 # clone and build PHP 7
 RUN git clone https://github.com/php/php-src.git /tmp/php-src/
@@ -77,7 +78,7 @@ RUN ./configure \
 	--with-pdo-mysql=shared \
 	--with-pdo-sqlite=shared \
 	--with-pdo-pgsql=shared \
-	--with-config-file-path=/etc/php/ \
+	--with-config-file-path=/etc/php \
 	--disable-short-tags \
 	--enable-phpdbg \
 	--with-readline \
@@ -93,15 +94,17 @@ RUN ./configure \
 	--enable-sysvshm \
 	--enable-ftp \
 	--enable-fpm \
+	--enable-shmop \
     	--with-fpm-user=www-data \
-	--with-fpm-group=www-data
+	--with-fpm-group=www-data \
+	--bindir=/usr/bin \
+	--sbindir=/usr/sbin \
+	--libdir=/usr/lib \
+	--includedir=/usr/include \
+	--mandir=/usr/local
 
 RUN make 
 RUN make install
-
-# create symlinks for the binaries (needed for execution without the absolute path)
-RUN ln -s /usr/php/bin/* /usr/bin/
-RUN ln -s /usr/php/sbin/* /usr/sbin/
 
 # building of extensions would be like this both are not working since the php core has been changed in php7 but maybe in time
 # Mongo DB
@@ -128,19 +131,17 @@ RUN mkdir -p /var/run/sshd
 
 # copy my template files to the docker path
 COPY php/mods-available/* /etc/php/mods-available/
-COPY php/fpm/*.ini /etc/php/fpm/
-COPY php/fpm/*.conf /etc/php/fpm/
-COPY php/fpm/pool.d/*.conf /etc/php/fpm/pool.d/
-COPY php/fpm/conf.d/*.ini /etc/php/fpm/conf.d/
-COPY php/cli/*.ini /etc/php/cli/
-COPY php/cli/conf.d/*.ini /etc/php/cli/conf.d/
+COPY php/fpm/*.ini /etc/php/
+COPY php/fpm/*.conf /etc/php/
+COPY php/fpm/pool.d/*.conf /etc/php/pool.d/
+COPY php/fpm/conf.d/*.ini /etc/php/conf.d/
 
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 EXPOSE 8080
 
 #cleanup lateron
-RUN rm -rf /tmp/*
+#RUN rm -rf /tmp/*
 
 # service for init.d
 CMD ["/usr/bin/supervisord"]
